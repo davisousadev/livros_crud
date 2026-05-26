@@ -1,17 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
 import type { Book } from "../../types/types";
 import { booksService } from "../../services/booksService";
 import { PenIcon, TrashIcon } from "lucide-react";
 import { ModalEditBooks } from "../modalEditBook/index";
 import { ModalDeleteBook } from "../modalDeleteBook/index";
+import { useModalFunctions } from "../../hooks/modalFunctions";
 
 export function Books() {
-  const [selectedBook, setSelectedBook] = React.useState<Book | null>(null);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [selectedBookToDelete, setSelectedBookToDelete] =
-    React.useState<Book | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+
+  const { selectedItem, activeModal, handleEditClick, handleDeleteClick, handleCloseModal } = useModalFunctions<Book>();
 
   const {
     data: books = [],
@@ -22,29 +19,7 @@ export function Books() {
     queryFn: booksService.getBooks,
   });
 
-  function handleEditClick(book: Book) {
-    setSelectedBook(book);
-    setIsModalOpen(true);
-  }
-
-  function handleDeleteClick(book: Book) {
-    setSelectedBookToDelete(book);
-    setIsDeleteModalOpen(true);
-  }
-
-  function handleCloseModal() {
-    setIsModalOpen(false);
-    setSelectedBook(null);
-  }
-
-  function handleCloseDeleteModal() {
-    setIsDeleteModalOpen(false);
-    setSelectedBookToDelete(null);
-  }
-
-  if (isLoading) {
-    return <p className="text-center text-gray-600">Carregando livros...</p>;
-  }
+  if (isLoading) return <p className="text-center text-gray-600">Carregando livros...</p>;
 
   if (isError) {
     return (
@@ -54,22 +29,16 @@ export function Books() {
     );
   }
 
-  if (books.length === 0) {
-    return (
-      <p className="text-center text-gray-600">Nenhum livro cadastrado.</p>
-    );
-  }
+  if (books.length === 0) return <p className="text-center text-gray-600">Nenhum livro cadastrado.</p>
+    
 
   return (
     <>
       <div>
-        <h1 className="text-3xl text-center font-bold mb-2 text-gray-900">
-          Minha Biblioteca
-        </h1>
-        <div className="flex flex-wrap ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center">
           {books.map((book) => (
             <div
-              className="rounded-2xl border border-gray-200 bg-white shadow-sm w-1/4 p-4 m-2"
+              className="rounded-2xl border border-gray-200 bg-white shadow-sm w-fit p-4 m-2"
               key={book.id}
             >
               <h2 className="text-xl font-bold">{book.title}</h2>
@@ -96,15 +65,15 @@ export function Books() {
       </div>
 
       <ModalEditBooks
-        book={selectedBook}
-        isOpen={isModalOpen}
+        book={selectedItem}
+        isOpen={activeModal === "edit"}
         onClose={handleCloseModal}
       />
 
       <ModalDeleteBook
-        book={selectedBookToDelete}
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
+        book={selectedItem}
+        isOpen={activeModal === "delete"}
+        onClose={handleCloseModal}
       />
     </>
   );
