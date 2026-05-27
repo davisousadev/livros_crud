@@ -22,11 +22,16 @@ export function ModalEditBooks({ book, isOpen, onClose }: ModalEditBooksProps) {
   }));
 
   const updateBookMutation = useMutation({
-    mutationFn: (data: Omit<Book, "id">) =>
-      booksService.updateBook(book!.id, data),
+    mutationFn: (data: Omit<Book, "id">) => booksService.updateBook(book!.id, data),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["books"] });
       onClose();
+      setFormData({
+        title: "",
+        author: "",
+        rating: "5",
+        description: "",
+      });
     },
   });
 
@@ -41,9 +46,8 @@ export function ModalEditBooks({ book, isOpen, onClose }: ModalEditBooksProps) {
     });
   }
 
-  if (!isOpen || !book) {
-    return null;
-  }
+  if (!isOpen || !book) return null;
+  
 
   return (
     <ModalWrapper>

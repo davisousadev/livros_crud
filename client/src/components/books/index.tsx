@@ -17,6 +17,7 @@ export function Books() {
   } = useQuery<Book[]>({
     queryKey: ["books"],
     queryFn: booksService.getBooks,
+    retry: 2,
   });
 
   if (isLoading) return <p className="text-center text-gray-600">Carregando livros...</p>;
@@ -35,10 +36,10 @@ export function Books() {
   return (
     <>
       <div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center">
           {books.map((book) => (
             <div
-              className="rounded-2xl border border-gray-200 bg-white shadow-sm w-fit p-4 m-2"
+              className="rounded-2xl border border-gray-200 bg-white shadow-sm w-full p-4 m-2"
               key={book.id}
             >
               <h2 className="text-xl font-bold">{book.title}</h2>

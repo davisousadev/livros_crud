@@ -1,6 +1,6 @@
 import React from "react";
 
-type ModalKind = "edit" | "delete" | null;
+type ModalKind = "edit" | "delete" | "create" | null;
 
 export function useModalFunctions<T>() {
   const [selectedItem, setSelectedItem] = React.useState<T | null>(null);
@@ -21,11 +21,16 @@ export function useModalFunctions<T>() {
     setSelectedItem(null);
   }
 
+  function handleOpenCreateModal() {
+    setActiveModal("create");
+  }
+
   return {
     selectedItem,
     activeModal,
     handleEditClick,
     handleDeleteClick,
     handleCloseModal,
+    handleOpenCreateModal,
   };
 }

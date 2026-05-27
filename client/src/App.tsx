@@ -1,21 +1,21 @@
-import React from "react";
 import { Books } from "./components/books/index.tsx";
 import { Header } from "./components/layout/header/index.tsx";
 import { CreateBook } from "./components/createBook/index.tsx";
+import { useModalFunctions } from "./hooks/modalFunctions.tsx";
 
 function App() {
-  const [isCreateBookModalOpen, setIsCreateBookModalOpen] = React.useState(false);
+  const {handleCloseModal, activeModal, handleOpenCreateModal} = useModalFunctions();
 
   return (
     <>
-      <Header onAddBookClick={() => setIsCreateBookModalOpen(true)} />
+      <Header onAddBookClick={handleOpenCreateModal} />
       <main className="container mx-auto p-4">
         <Books />
       </main>
 
       <CreateBook
-        isOpen={isCreateBookModalOpen}
-        onClose={() => setIsCreateBookModalOpen(false)}
+        isOpen={activeModal === "create"}
+        onClose={handleCloseModal}
       />
     </>
   );
